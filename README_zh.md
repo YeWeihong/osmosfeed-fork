@@ -2,7 +2,7 @@
 
 [English](./README.md)
 
-# 奥斯莫::源系统
+# Osmos::feed系统
 
 利用GitHub搭建个人RSS阅读器
 
