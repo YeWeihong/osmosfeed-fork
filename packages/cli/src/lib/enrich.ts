@@ -1,4 +1,4 @@
-import cheerio from "cheerio";
+import * as cheerio from "cheerio";
 import { performance } from "perf_hooks";
 import Parser from "rss-parser";
 import { downloadTextFile } from "../utils/download";
