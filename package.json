@@ -7,6 +7,7 @@
     "doc": "docs"
   },
   "scripts": {
+    "prepare": "npm run build",
     "start": "npm run dev -w packages/cli -w packages/sandbox",
     "build": "npm run build -w packages/cli",
     "test": "npm run test -w packages/test -w packages/cli",
