@@ -1,10 +1,12 @@
 {
-  "name": "root",
-  "private": true,
+  "name": "@osmoscraft/osmosfeed",
   "version": "0.0.1",
   "description": "Monorepo root",
   "directories": {
     "doc": "docs"
+  },
+  "bin": {
+    "osmosfeed": "./packages/cli/main.js"
   },
   "scripts": {
     "prepare": "npm run build",
@@ -15,15 +17,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/osmoscraft/osmosfeed.git"
+    "url": "git+https://github.com/YeWeihong/osmosfeed-fork.git"
   },
-  "keywords": [],
   "author": "osmoscraft",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/osmoscraft/osmosfeed/issues"
-  },
-  "homepage": "https://github.com/osmoscraft/osmosfeed#readme",
   "workspaces": [
     "./packages/*"
   ]
