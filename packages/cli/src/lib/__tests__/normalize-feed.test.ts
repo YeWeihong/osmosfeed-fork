@@ -296,4 +296,83 @@ describe("normalizeFeed", () => {
     const result = normalizeFeed(mockInput, "https://example.com/feed/feed.xml");
     expect(result.items[0].content).toBe(null);
   });
+
+  it("uses content:encodedSnippet as content when description fields are missing", () => {
+    const mockInput: Parser.Output<any> = {
+      link: "https://example.com/",
+      feedUrl: "https://example.com/feed/feed.xml",
+      title: "Mock title",
+      items: [
+        {
+          "content:encoded": "<p>Full article body</p>",
+          "content:encodedSnippet": "Full article body",
+        },
+      ],
+    };
+    const result = normalizeFeed(mockInput, "https://example.com/feed/feed.xml");
+    expect(result.items[0].content).toBe("Full article body");
+  });
+
+  it("strips HTML from content:encoded when content:encodedSnippet is missing", () => {
+    const mockInput: Parser.Output<any> = {
+      link: "https://example.com/",
+      feedUrl: "https://example.com/feed/feed.xml",
+      title: "Mock title",
+      items: [
+        {
+          "content:encoded": "<p>Full article <b>body</b></p>",
+        },
+      ],
+    };
+    const result = normalizeFeed(mockInput, "https://example.com/feed/feed.xml");
+    expect(result.items[0].content).toBe("Full article body");
+  });
+
+  it("prefers contentSnippet over content:encodedSnippet", () => {
+    const mockInput: Parser.Output<any> = {
+      link: "https://example.com/",
+      feedUrl: "https://example.com/feed/feed.xml",
+      title: "Mock title",
+      items: [
+        {
+          contentSnippet: "Short description",
+          "content:encoded": "<p>Full article body</p>",
+          "content:encodedSnippet": "Full article body",
+        },
+      ],
+    };
+    const result = normalizeFeed(mockInput, "https://example.com/feed/feed.xml");
+    expect(result.items[0].content).toBe("Short description");
+  });
+
+  it("uses ns0:encodedSnippet as content when description and content:encoded fields are missing", () => {
+    const mockInput: Parser.Output<any> = {
+      link: "https://example.com/",
+      feedUrl: "https://example.com/feed/feed.xml",
+      title: "Mock title",
+      items: [
+        {
+          "ns0:encoded": "<p>Article via ns0 namespace</p>",
+          "ns0:encodedSnippet": "Article via ns0 namespace",
+        },
+      ],
+    };
+    const result = normalizeFeed(mockInput, "https://example.com/feed/feed.xml");
+    expect(result.items[0].content).toBe("Article via ns0 namespace");
+  });
+
+  it("strips HTML from ns0:encoded when ns0:encodedSnippet is missing", () => {
+    const mockInput: Parser.Output<any> = {
+      link: "https://example.com/",
+      feedUrl: "https://example.com/feed/feed.xml",
+      title: "Mock title",
+      items: [
+        {
+          "ns0:encoded": "<p>Article <em>body</em></p>",
+        },
+      ],
+    };
+    const result = normalizeFeed(mockInput, "https://example.com/feed/feed.xml");
+    expect(result.items[0].content).toBe("Article body");
+  });
 });

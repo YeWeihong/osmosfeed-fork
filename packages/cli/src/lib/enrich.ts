@@ -41,7 +41,9 @@ export interface EnrichedSource {
 
 const parser = new Parser({
   customFields: {
-    item: ["media:thumbnail"],
+    // content:encoded is handled by rss-parser's default fields with includeSnippet.
+    // ns0:encoded is a non-standard prefix for the same content namespace that some feeds use.
+    item: ["media:thumbnail", ["ns0:encoded", "ns0:encoded", { includeSnippet: true }]],
   },
 });
 

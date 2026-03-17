@@ -63,6 +63,15 @@ function getContentFromItem(item: Parser.Item & CustomFields): string | null {
     return getNonEmptyStringOrNull(htmlToText(item.content));
   }
 
+  const encodedSnippet =
+    getNonEmptyStringOrNull(item["content:encodedSnippet"]) ?? getNonEmptyStringOrNull(item["ns0:encodedSnippet"]);
+  if (encodedSnippet) return encodedSnippet;
+
+  const encoded = item["content:encoded"] ?? item["ns0:encoded"];
+  if (encoded) {
+    return getNonEmptyStringOrNull(htmlToText(encoded));
+  }
+
   return null;
 }
 
@@ -95,4 +104,8 @@ interface CustomFields {
     length: number;
   };
   "media:thumbnail": string;
+  "content:encoded"?: string;
+  "content:encodedSnippet"?: string;
+  "ns0:encoded"?: string;
+  "ns0:encodedSnippet"?: string;
 }
