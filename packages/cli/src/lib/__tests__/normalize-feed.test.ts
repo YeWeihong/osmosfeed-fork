@@ -239,4 +239,61 @@ describe("normalizeFeed", () => {
     const result = normalizeFeed(mockInput, "https://example.com/feed/feed.xml");
     expect(result.items[0].link).toBe(null);
   });
+
+  it("uses contentSnippet as content when available", () => {
+    const mockInput: Parser.Output<any> = {
+      link: "https://example.com/",
+      feedUrl: "https://example.com/feed/feed.xml",
+      title: "Mock title",
+      items: [
+        {
+          contentSnippet: "Plain text snippet",
+          content: "<p>Plain text snippet</p>",
+        },
+      ],
+    };
+    const result = normalizeFeed(mockInput, "https://example.com/feed/feed.xml");
+    expect(result.items[0].content).toBe("Plain text snippet");
+  });
+
+  it("strips HTML from raw content when contentSnippet is missing", () => {
+    const mockInput: Parser.Output<any> = {
+      link: "https://example.com/",
+      feedUrl: "https://example.com/feed/feed.xml",
+      title: "Mock title",
+      items: [
+        {
+          content: "<p>Hello <b>world</b></p>",
+        },
+      ],
+    };
+    const result = normalizeFeed(mockInput, "https://example.com/feed/feed.xml");
+    expect(result.items[0].content).toBe("Hello world");
+  });
+
+  it("returns null content when both contentSnippet and content are missing", () => {
+    const mockInput: Parser.Output<any> = {
+      link: "https://example.com/",
+      feedUrl: "https://example.com/feed/feed.xml",
+      title: "Mock title",
+      items: [{}],
+    };
+    const result = normalizeFeed(mockInput, "https://example.com/feed/feed.xml");
+    expect(result.items[0].content).toBe(null);
+  });
+
+  it("returns null content when content has only HTML tags and no text", () => {
+    const mockInput: Parser.Output<any> = {
+      link: "https://example.com/",
+      feedUrl: "https://example.com/feed/feed.xml",
+      title: "Mock title",
+      items: [
+        {
+          content: "<img src=\"image.png\" /><br/>",
+        },
+      ],
+    };
+    const result = normalizeFeed(mockInput, "https://example.com/feed/feed.xml");
+    expect(result.items[0].content).toBe(null);
+  });
 });
