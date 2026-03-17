@@ -1,5 +1,6 @@
 import Parser from "rss-parser";
 import { getNonEmptyStringOrNull } from "../utils/ensure-string-content";
+import { htmlToText } from "../utils/html-to-text";
 import { resolveRelativeUrl } from "../utils/url";
 
 export interface ParsedFeed {
@@ -40,7 +41,7 @@ export function normalizeFeed(feed: Parser.Output<CustomFields>, feedUrl: string
       const imageUrl = thumbnailImage ?? enclosureImage;
 
       return {
-        content: getNonEmptyStringOrNull(item.contentSnippet),
+        content: getContentFromItem(item),
         creator: getNonEmptyStringOrNull(item.creator),
         guid: getNonEmptyStringOrNull(item.guid),
         isoDate: getNonEmptyStringOrNull(item.isoDate),
@@ -52,6 +53,17 @@ export function normalizeFeed(feed: Parser.Output<CustomFields>, feedUrl: string
       };
     }),
   };
+}
+
+function getContentFromItem(item: Parser.Item & CustomFields): string | null {
+  const snippet = getNonEmptyStringOrNull(item.contentSnippet);
+  if (snippet) return snippet;
+
+  if (item.content) {
+    return getNonEmptyStringOrNull(htmlToText(item.content));
+  }
+
+  return null;
 }
 
 function getItunesFields(itunesItem: CustomFields) {

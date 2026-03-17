@@ -128,7 +128,7 @@ function organizeByArticles(input: GetTemplateDataInput): TemplateArticle[] {
         isoPublishDate: getDateFromIsoString(article.publishedOn),
         ...getTimestamps(article.publishedOn, input.config.timezoneOffset),
         title: ensureDisplayString(htmlToText(article.title), "Untitled"),
-        description: ensureDisplayString(htmlToText(article.description), "No content preview"),
+        description: ensureDisplayString(htmlToText(article.description), "暂无内容预览"),
         readingTimeInMin: Math.round((article.wordCount ?? 0) / 300),
       }))
     )
